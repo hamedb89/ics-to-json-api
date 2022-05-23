@@ -15,7 +15,9 @@ router.get('/', (req, res) => {
 router.get('/another', (req, res) => res.json({ route: req.originalUrl }));
 router.post('/', (req, res) => res.json({ postBody: req.body }));
 router.get('/api', (req, res, next) => {
-	res.json(ICalParser.default.toJSON(x));
+	// res.json(ICalParser.default.toJSON(x));
+	res.write(x)
+	res.end();
 });
 
 app.use(bodyParser.json());
