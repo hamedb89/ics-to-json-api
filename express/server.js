@@ -20,8 +20,8 @@ router.get('/api', (req, res, next) => {
 	var icsUrl = "https://www.trainingpeaks.com/ical/YLEJMHQOU5GCO.ics";
 	axios
 		.get(icsUrl)
-		.then(function(res){
-			res.write(res);
+		.then(function(result){
+			res.write(result);
 			res.end();
 		})
 });
