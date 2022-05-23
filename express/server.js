@@ -15,20 +15,20 @@ router.get('/', (req, res) => {
 });
 router.get('/another', (req, res) => res.json({ route: req.originalUrl }));
 router.post('/', (req, res) => res.json({ postBody: req.body }));
-router.get('/api', (req, res, next) => {
+router.get('/api/:url', (req, res, next) => {
 	
-	var icsUrl = "https://www.trainingpeaks.com/ical/YLEJMHQOU5GCO.ics";
+	var icsUrl = "https://www.trainingpeaks.com/ical/" + req.params.url;
 	axios
 		.get(icsUrl)
 		.then(function(result){
-			res.write(result);
+
+			res.json(ICalParser.default.toJSON(result.data));
 			res.end();
 		})
 });
 
 app.use(bodyParser.json());
 app.use('/.netlify/functions/server', router);  // path must route to lambda
-app.use('/', (req, res) => res.sendFile(path.join(__dirname, '../index.html')));
 
 
 module.exports = app;
