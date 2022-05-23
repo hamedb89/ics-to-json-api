@@ -11,5 +11,8 @@
   "scripts": {
     "build": "netlify-lambda build express",
     "start": "nodemon server-local.js"
+  },
+  "dependencies": {
+    "axios": "^0.27.2"
   }
 }
