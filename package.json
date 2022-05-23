@@ -10,6 +10,6 @@
   "main": "functions/server.js",
   "scripts": {
     "build": "netlify-lambda build express",
-    "start": "netlify-lambda build express"
+    "start": "nodemon server-local.js"
   }
 }
