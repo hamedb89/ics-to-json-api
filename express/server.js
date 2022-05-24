@@ -37,36 +37,36 @@ router.post('/api/', (req, res, next) => {
 
 	const fields = req.body;
 	const friends = fields.friends;
-	console.log(friends.length);
 
 	let eventsArray = [];
+	let requests = [];
 
 	friends.map(function(friend, index){
 
 		const icsUrl = "https://www.trainingpeaks.com/ical/" + friend.ics;
-		console.log(friend);
 
-		axios
-			.get(icsUrl)
-			.then(function(result){
+		requests.push(axios.get(icsUrl, {
+			params: {
+				friend: friend
+			}
+		}));
+	});
 
-				const jsonFriend = ICalParser.default.toJSON(result.data);
-				const events = jsonFriend.events.map(function(event){
-					event.friend = friend;
-					return event;
-				});
+	axios.all(requests).then(axios.spread((...responses) => {
 
-				eventsArray = eventsArray.concat(events);
-
-				if (index == friends.length-1) {
-
-					res.json(JSON.stringify(eventsArray));
-
-				}
-
+		responses.map(function(response) {
+			const jsonFriend = ICalParser.default.toJSON(response.data);
+			const events = jsonFriend.events.map(function(event){
+				event.friend = response.config.params.friend;
+				return event;
 			});
 
-	});
+			eventsArray = eventsArray.concat(events);
+		})
+
+		res.json(JSON.stringify(eventsArray));
+
+	}))
 
 });
 
