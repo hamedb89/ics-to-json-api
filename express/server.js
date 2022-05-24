@@ -50,7 +50,8 @@ router.post('/api/', (req, res, next) => {
 
 				const jsonFriend = ICalParser.default.toJSON(result.data);
 				const events = jsonFriend.events.map(function(event){
-					return event.friend = friend;
+					event.friend = friend;
+					return event;
 				});
 
 				jsonFriendsArray = jsonFriendsArray.concat(events);
