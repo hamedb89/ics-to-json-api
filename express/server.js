@@ -45,11 +45,7 @@ router.post('/api/', (req, res, next) => {
 
 		const icsUrl = "https://www.trainingpeaks.com/ical/" + friend.ics;
 
-		requests.push(axios.get(icsUrl, {
-			params: {
-				friend: friend
-			}
-		}));
+		requests.push(axios.get(icsUrl));
 	});
 
 	axios.all(requests).then(axios.spread((...responses) => {
@@ -65,6 +61,7 @@ router.post('/api/', (req, res, next) => {
 		})
 
 		res.json(JSON.stringify(eventsArray));
+		res.end();
 
 	}))
 
