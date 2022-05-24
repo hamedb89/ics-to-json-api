@@ -43,6 +43,7 @@ router.post('/api/', (req, res, next) => {
 	friends.map(function(friend, index){
 
 		const icsUrl = "https://www.trainingpeaks.com/ical/" + friend.ics;
+		console.log(friend);
 
 		axios
 			.get(icsUrl)
@@ -60,6 +61,7 @@ router.post('/api/', (req, res, next) => {
 
 					res.write(JSON.stringify(jsonFriendsArray));
 					res.end();
+
 				}
 
 			});
