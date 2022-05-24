@@ -33,7 +33,7 @@ router.get('/api/:url', (req, res, next) => {
 		})
 });
 
-router.post('/api/', (req, res, next) => {
+router.post('/api', (req, res, next) => {
 
 	const fields = req.body;
 	const friends = fields.friends;
@@ -60,7 +60,7 @@ router.post('/api/', (req, res, next) => {
 			eventsArray = eventsArray.concat(events);
 		})
 
-		res.json(JSON.stringify(eventsArray));
+		res.write(JSON.stringify(eventsArray));
 		res.end();
 
 	}))
