@@ -37,6 +37,7 @@ router.post('/api/', (req, res, next) => {
 
 	const fields = req.body;
 	const friends = fields.friends;
+	console.log(friends.length);
 
 	let eventsArray = [];
 
@@ -56,11 +57,10 @@ router.post('/api/', (req, res, next) => {
 				});
 
 				eventsArray = eventsArray.concat(events);
-				eventsArray
 
-				if (index == friends.length - 1) {
+				if (index == friends.length-1) {
 
-					res.write(JSON.stringify(eventsArray));
+					res.json(JSON.stringify(eventsArray));
 
 				}
 
