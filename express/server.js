@@ -53,7 +53,7 @@ router.post('/api/', (req, res, next) => {
 		responses.map(function(response) {
 			const jsonFriend = ICalParser.default.toJSON(response.data);
 			const events = jsonFriend.events.map(function(event){
-				event.friend = response.config.params.friend;
+				//event.friend = response.config.params.friend;
 				return event;
 			});
 
