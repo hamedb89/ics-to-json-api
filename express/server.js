@@ -101,11 +101,11 @@ router.post('/api/grouped', (req, res, next) => {
 				event.friend = urlFriendDict[response.config.url];
 
 				return event;
-			});
+			}).filter(event => moment(event.dtstart.value).isAfter(moment()));
 
 			eventsArray = eventsArray.concat(events);
 
-		})
+		});
 
 		
 		const hash = eventsArray.reduce((p,c) => {
