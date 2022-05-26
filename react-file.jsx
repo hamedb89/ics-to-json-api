@@ -1,96 +1,72 @@
-import React, { useEffect, useState } from "react";
-import { Text, View, SectionList } from "react-native";
-import moment from "moment";
+import React, {useState, useEffect} from 'react';
+import { Text, View, FlatList, SectionList } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import moment from 'moment';
 
-export default function App() {
-  const [hamed, setHamed] = useState([]);
-  const [maria, setMaria] = useState([]);
+const FriendsData = {
+  friends: [
+      { name: "Hamed", ics: "YLEJMHQOU5GCO.ics" },
+    { name: "Maria", ics: "5F4ZHOGCDB3NG.ics" }
+    ]
+};
 
-  // Accepts the array and key
-  const groupBy = (array, key) => {
-  
-      // Return the end result
-    return array.reduce((result, currentValue) => {
-      // If an array already present for key, push it to the array. Else create an array and push the object
-      (result[currentValue[key]] = result[currentValue[key]] || []).push(
-        currentValue
-      );
-      // Return the current iteration `result` value, this will be taken as next iteration `result` value and accumulate
-      return result;
-    }, {}); // empty object is the initial value for result object
-  };
+function FriendsScreen() {
+  const data = FriendsData;
 
-  const getHamedsTraining = async () => {
-    try {
-      const response = await fetch(
-        "https://main--spontaneous-tarsier-5131b3.netlify.app/.netlify/functions/server/api/YLEJMHQOU5GCO.ics"
-      );
-      const json = await response.json();
-      const events = json.events.map( event => {
-        event.athlete_name = 'Hamed';
-        return event;
-      } )
-      setHamed(events);
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <FlatList
+        data={data.friends}
+        renderItem={({ item, index, separators }) => (
+          <Text>{item.name}</Text>
+        )}
+        />
+    </View>
+  );
+}
 
-    } catch (error) {
-      console.error(error);
-    } finally {
-    }
-  };
+function TimelineScreen() {
+  const [data, setData] = useState([]);
 
-  const getMariasTraining = async () => {
-    try {
-      const response = await fetch(
-        "https://main--spontaneous-tarsier-5131b3.netlify.app/.netlify/functions/server/api/5F4ZHOGCDB3NG.ics"
-      );
-      const json = await response.json();
-      const events = json.events.map(event => {
-        event.athlete_name = 'Maria';
-        return event;
+  const getTrainings = async () => {
+      const response = await fetch("https://main--spontaneous-tarsier-5131b3.netlify.app/.netlify/functions/server/api", {
+        method: 'POST',
+        body: JSON.stringify(FriendsData),
+        headers: {
+          'content-type': 'application/json'
+        }
       });
-      setMaria(events);
-    } catch (error) {
-      console.error(error);
-    } finally {
-    }
+      const json = await response.json();
+      
+      setData(json);
+
   };
 
   useEffect(() => {
-    getMariasTraining();
-    getHamedsTraining();
+    getTrainings();
   }, []);
 
-  let sections = [{title: '', data: []}];
-  const data = hamed.concat(maria).sort((a, b) => {
-    return moment(a.dtstart.value).format('YYYYMMDD') > moment(b.dtstart.value).format('YYYYMMDD') ? 1 : -1;
-  }).map(item => {
-    item.date = item.dtstart.value
-    return item;
-  });
-
-  const grouped = groupBy(data, 'date');
-  
-  sections = Object.entries(grouped).map(([key, value]) => {
-    // Pretty straightforward - use key for the key and value for the value.
-    // Just to clarify: unlike object destructuring, the parameter names don't matter here.
-    grouped[key].title = key;
-    return {title: key, data: value};
-  });
-
   return (
-    <View>
-      <SectionList
-        sections={sections}
-        renderSectionHeader={ 
-          ({ section : { title }}) => (<Text>{moment(title).format("DD.MM.YYYY")}</Text>) 
-        }
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <FlatList
+        data={data}
         renderItem={({ item }) => (
-          <Text>
-            {item.athlete_name} {moment(item.dtstart.value).format("DD.MM.YYYY")} {item.summary},{" "}
-          </Text>
-        )}
-        keyExtractor={(item, index) => item.uid + index}
-      />
-    </View>
+          <Text>{item.friend.name} {moment(item.dtstart.value).format('DD.MM.YYYY')} {item.summary}</Text>
+        )} />
+    </View> 
+  );
+}
+
+const Tab = createBottomTabNavigator();
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator>
+        <Tab.Screen name="Friends" component={FriendsScreen} />
+        <Tab.Screen name="Timeline" component={TimelineScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
