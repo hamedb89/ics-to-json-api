@@ -113,9 +113,9 @@ router.post('/api/grouped', (req, res, next) => {
 			return (p[day] ? p[day].push(c) : p[day] = [c],p)
 		}, {});
 
-		console.log(hash);
+		const newData = Object.keys(hash).map(k => ({ section: k, events: hash[k] }));
 
-		res.write(JSON.stringify(eventsArray));
+		res.write(JSON.stringify(newData));
 		res.end();
 
 	}));
