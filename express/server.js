@@ -101,7 +101,7 @@ router.post('/api/grouped', (req, res, next) => {
 				event.friend = urlFriendDict[response.config.url];
 
 				return event;
-			}).filter(event => moment(event.dtstart.value).isAfter(moment()));
+			}).filter(event => moment(event.dtstart.value).isAfter(moment().subtract(1, 'days')));
 
 			eventsArray = eventsArray.concat(events);
 
